@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers'
 import { contractInstance, getEvents, useContractQuery } from '../utils';
+import EventCard from '@/components/EventCard';
 
 const ContractInteraction = () => {
 
@@ -66,7 +67,31 @@ useEffect(() => {
     </div>
     <p onClick={getEventHandler}>Get EVents</p>
     {events && events.map(event => (
-      event.eventOwner
+//       deposit
+// : 
+// BigNumber {_hex: '0x0b', _isBigNumber: true}
+// eventDataCID
+// : 
+// "66"
+// eventOwner
+// : 
+// "0x6ad513fDA973Bf1FC24c04256D686CbE05d714c7"
+// eventTimestamp
+// : 
+// BigNumber {_hex: '0x22c3', _isBigNumber: true}
+// maxCapacity
+// : 
+// BigNumber {_hex: '0x21', _isBigNumber: true}
+      <EventCard
+              key={event.id}
+              id={event.id}
+              deposit={event.deposit}
+              owner={event.eventOwner}
+              maxCapacity={event.maxCapacity}
+              startTime={event.eventTimestamp.toString()}
+          
+              // getTransactionsHandler={getTransactionsHandler}
+            />
     ))}
   </div>
   );

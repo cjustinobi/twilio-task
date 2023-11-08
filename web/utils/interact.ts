@@ -16,12 +16,22 @@ export const contractInstance = (provider: ethers.Signer | ethers.providers.Prov
 export const getEvents = async (provider: ethers.Signer | ethers.providers.Provider | undefined) => {
   try {
     const contract = await contractInstance(provider)
+
     const eventCount = await contract.getEventLength()
-// return console.log(eventCount)
+
     let events = []
 
     for (let i = 0; i < eventCount; i++) {
-      const event = await contract.getEvent(i)
+      const eventData = await contract.getEvent(i)
+      const event = {
+        id: i,
+        eventDataCID: eventData[0],
+        eventOwner: eventData[1],
+        eventTimestamp: eventData[2],
+        maxCapacity: eventData[3],
+        deposit: eventData[4],
+        eventId: eventData[5],
+      }
       events.push(event)
     }
     console.log(events)

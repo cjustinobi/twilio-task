@@ -19,7 +19,7 @@ const Header = () => {
                 </div>
                 <div className="flex flex-1 justify-between">
                   <div className="flex flex-shrink-0 items-center text-gray-100">
-                    <Link href="/" className="font-semibold">Talent Mkt</Link>
+                    <Link href="/" className="font-semibold">EventHub</Link>
                     {/*<Image className="block h-8 w-auto sm:block lg:block" src="/logo.svg" width="24" height="24" alt="Celo Logo" />*/}
                   </div>
                   <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
