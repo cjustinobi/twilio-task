@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 const Header = () => {
 	const router = useRouter()
@@ -41,7 +42,7 @@ const Header = () => {
                     {/* <button onClick={() => setAccountModal(true)} className="bg-gradient-to-b from-blue-1 to-green-1 text-white font-bold py-2 px-4 rounded-[10px] mr-4 ml-2">
                       Create Account
                     </button> */}
-                    {/* <ConnectButton showBalance={{smallScreen: true, largeScreen: false}} /> */}
+                    <ConnectButton showBalance={{smallScreen: true, largeScreen: false}} />
                   </div>
                 </div>
               </div>

@@ -43,10 +43,14 @@ await window.ethereum.request({ method: 'eth_requestAccounts' });
 }
 
 const getEventHandler = async () => {
-  await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const eventList = await getEvents(provider)
-setEvents(eventList);
+  if (window.ethereum) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const eventList = await getEvents(provider)
+    setEvents(eventList);
+  } else {
+    console.log('Install Metamask to continue')
+  }
+        
   
 }
 
@@ -89,7 +93,7 @@ useEffect(() => {
               owner={event.eventOwner}
               maxCapacity={event.maxCapacity}
               startTime={event.eventTimestamp.toString()}
-          
+
               // getTransactionsHandler={getTransactionsHandler}
             />
     ))}
