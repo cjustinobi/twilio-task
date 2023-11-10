@@ -8,8 +8,11 @@ import '@/styles/globals.css'
 import "@rainbow-me/rainbowkit/styles.css"
 import AppHeader from '@/components/layout/Header'
 import AppFooter from '@/components/layout/Footer'
+import { ModalContext } from '@/contexts/ModalContext';
 
 import { QueryClient, QueryClientProvider } from 'react-query';
+import FormModal from '@/components/FormModal'
+import { ModalProvider } from '@/components/ModalProvider';
 
 const projectId = process.env.NEXT_PUBLIC_PROJECTID as string // get one at https://cloud.walletconnect.com/app
 
@@ -33,13 +36,18 @@ const wagmiConfig = createConfig({
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
-  return (
+  return ( 
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains}>
         <QueryClientProvider client={queryClient}>
-          <AppHeader />
-          <Component {...pageProps} />
-          <AppFooter />
+          {/* <ModalContext.Provider value={{ show: true }}> */}
+          <ModalProvider>
+            <FormModal />
+            <AppHeader />
+            <Component {...pageProps} />
+            {/* <AppFooter /> */}
+          </ModalProvider>
+          {/* </ModalContext.Provider> */}
         </QueryClientProvider>
       </RainbowKitProvider>
     </WagmiConfig>

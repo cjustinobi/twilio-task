@@ -12,7 +12,7 @@ contract EventHub {
         uint256 eventTimestamp,
         uint256 maxCapacity,
         uint256 deposit,
-        string eventDataCID
+        string imagePath
     );
 
     event NewRSVP(uint256 eventID, address attendeeAddress);
@@ -22,7 +22,9 @@ contract EventHub {
     event DepositsPaidOut(uint256 eventID);
 
     struct CreateEvent {
-        string eventDataCID;
+        string title;
+        string description;
+        string imagePath;
         address eventOwner;
         uint256 eventTimestamp;
         uint256 deposit;
@@ -35,10 +37,12 @@ contract EventHub {
     mapping(uint256 => CreateEvent) public idToEvent;
 
     function createNewEvent(
+        string calldata title,
+        string calldata description,
         uint256 eventTimestamp,
         uint256 deposit,
         uint256 maxCapacity,
-        string calldata eventDataCID
+        string calldata imagePath
        
     ) external returns(uint256) {
 
@@ -48,7 +52,9 @@ contract EventHub {
 
         // this creates a new CreateEvent struct and adds it to the idToEvent mapping
         idToEvent[eventId] = CreateEvent(
-            eventDataCID,
+            title,
+            description,
+            imagePath,
             msg.sender,
             eventTimestamp,
             deposit,
@@ -64,7 +70,7 @@ contract EventHub {
             eventTimestamp,
             maxCapacity,
             deposit,
-            eventDataCID
+            imagePath
         );
         totalEvents ++;
         eventIds.push(eventId);
@@ -195,14 +201,18 @@ contract EventHub {
     }
 
     function getEvent(uint256 eventID) public view returns (
-        string memory eventDataCID,
+        string memory title,
+        string memory description,
+        string memory imagePath,
         address eventOwner,
         uint256 eventTimestamp,
         uint256 maxCapacity,
         uint256 deposit
     ) {
         return (
-        idToEvent[eventID].eventDataCID,
+        idToEvent[eventID].title,
+        idToEvent[eventID].description,
+        idToEvent[eventID].imagePath,
         idToEvent[eventID].eventOwner,
         idToEvent[eventID].eventTimestamp,
         idToEvent[eventID].maxCapacity,

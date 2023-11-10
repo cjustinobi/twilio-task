@@ -1,15 +1,12 @@
 
 import { ethers } from 'ethers'
-import { useQuery } from 'react-query';
 import EventHub from '../EventHub.json'
 
 const contractABI = EventHub.abi
 
-// const provider = new ethers.JsonRpcProvider(sepoliaConfig.network);
-const contractAddress = '0xC8eE1722255964a43B9Fb7547b9189a5e9d13317';
+const contractAddress = '0x8Afc582d8F7ab08Df7295386C4a039E15e93C9f1';
 
 export const contractInstance = (provider: ethers.Signer | ethers.providers.Provider | undefined) => {
-  // const provider = new ethers.providers.Web3Provider(window.ethereum);
   return new ethers.Contract(contractAddress, contractABI, provider);
 }
 
@@ -23,14 +20,16 @@ export const getEvents = async (provider: ethers.Signer | ethers.providers.Provi
 
     for (let i = 0; i < eventCount; i++) {
       const eventData = await contract.getEvent(i)
+      console.log(eventData[3])
       const event = {
         id: i,
-        eventDataCID: eventData[0],
-        eventOwner: eventData[1],
-        eventTimestamp: eventData[2],
-        maxCapacity: eventData[3],
-        deposit: eventData[4],
-        eventId: eventData[5],
+        title: eventData[0],
+        description: eventData[1],
+        imagePath: eventData[2],
+        owner: eventData[3],
+        eventTimestamp: eventData[4],
+        maxCapacity: eventData[5],
+        deposit: eventData[6],
       }
       events.push(event)
     }
@@ -42,15 +41,23 @@ export const getEvents = async (provider: ethers.Signer | ethers.providers.Provi
   }
 }
 
-const getContractData = async (contract, methodName, args) => {
-  const contractFunction = contract[methodName];
-  const result = await contractFunction(...args);
-  return result;
-};
-
-export const useContractQuery = async (provider, methodName, args) => {
+export const createEvent = async (
+  provider: ethers.Signer | ethers.providers.Provider | undefined,
+  title: string,
+  description: string,
+  eventTimestamp: number | undefined,
+  deposit: number,
+  maxCapacity: number,
+  imagePath: string
+  ) => {
   const contract = await contractInstance(provider)
-  return useQuery(['contractData', methodName, args], () =>
-    getContractData(contract, methodName, args)
-  );
+  return await contract.createNewEvent(
+    title,
+    description,
+    eventTimestamp,
+    deposit,
+    maxCapacity,
+    imagePath
+  )
 }
+

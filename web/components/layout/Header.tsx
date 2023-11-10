@@ -1,9 +1,12 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useContext } from 'react'
+import { ModalContext } from '@/contexts/ModalContext'
 
 const Header = () => {
 	const router = useRouter()
+	const { toggleModal } = useContext(ModalContext)
 	return (
 		<div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
               <div className="relative flex h-16 justify-between">
@@ -39,9 +42,9 @@ const Header = () => {
                   </div>
                 
                   <div className="flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                    {/* <button onClick={() => setAccountModal(true)} className="bg-gradient-to-b from-blue-1 to-green-1 text-white font-bold py-2 px-4 rounded-[10px] mr-4 ml-2">
-                      Create Account
-                    </button> */}
+                    <button onClick={toggleModal} className="bg-gradient-to-b from-blue-1 to-green-1 text-white font-bold py-2 px-4 rounded-[10px] mr-4 ml-2">
+                      Create Event
+                    </button>
                     <ConnectButton showBalance={{smallScreen: true, largeScreen: false}} />
                   </div>
                 </div>

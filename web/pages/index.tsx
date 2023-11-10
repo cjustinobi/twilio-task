@@ -1,46 +1,14 @@
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ethers } from 'ethers'
-import { contractInstance, getEvents, useContractQuery } from '../utils';
+import { getEvents } from '../utils';
 import EventCard from '@/components/EventCard';
+import { ModalContext } from '@/contexts/ModalContext';
 
 const ContractInteraction = () => {
 
   const [events, setEvents] = useState([]);
-
-//   const test = async () => {
-//   // Check if MetaMask or a compatible Ethereum wallet is available
-//   if (window.ethereum) {
-//     try {
-//       // Request permission to connect
-//       await window.ethereum.request({ method: 'eth_requestAccounts' });
-//       const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-       
-//         const contract = contractInstance(provider)
-//       const contractData = await contract.getEvents()
- 
-//       console.log(contractData);
-   
-//     } catch (error) {
-//       console.error('Error connecting to MetaMask:', error);
-//     }
-//   } else {
-//     console.error('MetaMask or a compatible Ethereum wallet is not available.');
-//   }
-// };
-
-
-const createEvent = async () => {
-await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-    
-       
-        const contract = contractInstance(provider.getSigner())
-   const contractData = await contract.createNewEvent(8899, 11, 33,'66');
-    console.log(contractData)
-
-}
+  const { eventCreated } = useContext(ModalContext)
 
 const getEventHandler = async () => {
   if (window.ethereum) {
@@ -50,13 +18,11 @@ const getEventHandler = async () => {
   } else {
     console.log('Install Metamask to continue')
   }
-        
-  
 }
 
 useEffect(() => {
     getEventHandler();
-  }, []);
+  }, [eventCreated]);
 
   return (
   <div className="bg-black-1 flex flex-col items-center justify-center px-4 py-12 md:py-20 mx-auto md:px-10 lg:px-16 xl:px-24">

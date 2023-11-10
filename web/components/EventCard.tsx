@@ -1,6 +1,10 @@
+import { timestampToDate } from "@/utils"
+
 
 interface EventCardProps {
   id: number
+  title: string
+  description: string
   owner: string
   startTime: number
   maxCapacity: number
@@ -9,6 +13,8 @@ interface EventCardProps {
 
 const EventCard: React.FC<EventCardProps> = ({
     id,
+    title,
+    description,
     owner,
     startTime,
     maxCapacity,
@@ -16,10 +22,11 @@ const EventCard: React.FC<EventCardProps> = ({
    }) => {
   return (
     <div className='bg-gradient-to-b from-blue-1 to-green-1 rounded-2xl p-[1px] w-[250px]'>
-      <div className='bg-dark-grey-1 space-y-2 relative rounded-2xl p-4 h-full text-white'>
+      <div className='bg-dark-grey-1 space-y-2 rounded-2xl p-4 h-full text-white'>
 
         <p className='text-xl font-bold leading-6 text-start text-white'>
-          {/* {truncate(customer)} */ owner}
+          {/* {truncate(customer)} */ title}
+          {owner}
         </p>
 
         <div className='flex flex-row w-full justify-between'>
@@ -28,7 +35,7 @@ const EventCard: React.FC<EventCardProps> = ({
             {/* <p className='text-sm font-normal text-white'>{timestampToDate(created)}</p> */}
           </div>
           <div className='flex w-fit flex-col items-start justify-center'>
-            <p className='text-sm font-medium text-bright-grey-1'>Completed</p>
+            <p className='text-sm font-medium text-bright-grey-1'>Completed</p>{timestampToDate(startTime)}
             {/* <p className='text-sm font-normal text-white'>{status === 3 ? timestampToDate(completed) : 0}</p> */}
           </div>
         </div>
@@ -46,7 +53,7 @@ const EventCard: React.FC<EventCardProps> = ({
         .Completed { background: green; }
       `}</style>
           {/* <span className={`status ${STATUS(status)}`}>{STATUS(status)}</span> */}
-          <span className="InProgress">In Progress</span>
+          {/* <span className="InProgress">In Progress</span> */}
         </div>
         {/* {(STATUS(status) === 'InProgress') && <div className="flex justify-between">
           <button onClick={cancelHandler} className='flex flex-row space-x-2 items-center justify-center w-full py-3 bg-gradient-to-b from-yellow-1 to-red-1 rounded-lg'>
