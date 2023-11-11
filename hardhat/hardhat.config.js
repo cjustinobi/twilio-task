@@ -18,5 +18,12 @@ module.exports = {
       // url: `https://eth-sepolia.g.alchemy.com/v2/q7fjK5eosDfEgAmoNXHHIXMjEomWECLk`,
       accounts: [SEPOLIA_PRIVATE_KEY]
     }
-  }
+  },
+  optimizer: {
+    enabled: true,
+    runs: 200,
+  },
+  paths: {
+    artifacts: '../web/artifacts'
+  },
 };

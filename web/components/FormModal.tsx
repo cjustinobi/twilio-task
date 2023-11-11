@@ -6,12 +6,12 @@ import { ethers } from "ethers";
 const FormModal = () => {
 const { showModal, toggleModal, setEventCreated } = useContext(ModalContext)
 
-const [title, setTitle] = useState<string>('')
-const [description, setDescription] = useState<string>('')
-const [deposit, setDeposit] = useState<number>(0)
-const [capacity, setCapacity] = useState<number>(0)
+const [title, setTitle] = useState<string>('SWeet title')
+const [description, setDescription] = useState<string>('Desc')
+const [deposit, setDeposit] = useState<string>('')
+const [capacity, setCapacity] = useState<number>(2)
 const [startTime, setStartTime] = useState<number | undefined>(0)
-const [imagePath, setImagePath] = useState<string>('')
+const [imagePath, setImagePath] = useState<string>('https://cockpit-project.org/images/site/cockpit-logo.svg')
 
 // const saveHandler = async () => {
 //   const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -29,7 +29,6 @@ const saveHandler = async () => {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const res = await createEvent(provider.getSigner(), title, description, startTime, deposit, capacity, imagePath)
-      debugger
       toggleModal()
       setEventCreated(true)
     } catch (error) {
@@ -50,7 +49,7 @@ const saveHandler = async () => {
   <div className={`fixed ${showModal ? '' : 'hidden'} inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="my-modal`}>
 
     <form className="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Create Event</h2>{startTime}
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Create Event {typeof deposit}</h2>
       <div className=" mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
           Title
@@ -73,7 +72,7 @@ const saveHandler = async () => {
           className="w-full px-3 py-2 border rounded-lg text-gray-700 focus:outline-none focus:border-blue-500"
           type="number"
           id="deposit"
-          onChange={e => setDeposit(parseInt(e.target.value))}
+          onChange={e => setDeposit(e.target.value)}
           placeholder="Ticket Price"
           required
         />

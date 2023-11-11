@@ -25,7 +25,7 @@ useEffect(() => {
   }, [eventCreated]);
 
   return (
-  <div className="bg-black-1 flex flex-col items-center justify-center px-4 py-12 md:py-20 mx-auto md:px-10 lg:px-16 xl:px-24">
+  <div className="bg-black-1 px-4 py-12 md:py-20 mx-auto md:px-10 lg:px-16 xl:px-24">
     <div className='container flex flex-col items-center justify-center px-4 py-5 mx-auto md:px-10 lg:px-16 xl:px-24'>
       <p className="text-4xl md:text-6xl xl:text-8xl py-2 text-white font-bold leading-tight text-center font-ClashDisplay">
         <span className="bg-clip-text text-transparent bg-gradient-to-b from-red-1 to-gold-1">Event</span>
@@ -36,34 +36,30 @@ useEffect(() => {
       </p>
     </div>
     <p onClick={getEventHandler}>Get EVents</p>
-    {events && events.map(event => (
-//       deposit
-// : 
-// BigNumber {_hex: '0x0b', _isBigNumber: true}
-// eventDataCID
-// : 
-// "66"
-// eventOwner
-// : 
-// "0x6ad513fDA973Bf1FC24c04256D686CbE05d714c7"
-// eventTimestamp
-// : 
-// BigNumber {_hex: '0x22c3', _isBigNumber: true}
-// maxCapacity
-// : 
-// BigNumber {_hex: '0x21', _isBigNumber: true}
-      <EventCard
-              key={event.id}
-              id={event.id}
-              deposit={event.deposit}
-              owner={event.eventOwner}
-              maxCapacity={event.maxCapacity}
-              startTime={event.eventTimestamp.toString()}
+    
 
-              // getTransactionsHandler={getTransactionsHandler}
+<div className="flex flex-wrap mx-4">
+{events && events.map(event => (
+      <EventCard
+        key={event.id}
+        id={event.id}
+        title={event.title}
+        confirmedRSVPs={event.confirmedRSVPs}
+        deposit={event.deposit.toString()}
+        owner={event.owner}
+        imagePath={event.imagePath}
+        maxCapacity={event.maxCapacity}
+        startTime={event.eventTimestamp.toString()}
+
+        // getTransactionsHandler={getTransactionsHandler}
             />
     ))}
+  
+</div>
+
   </div>
+
+
   );
 };
 

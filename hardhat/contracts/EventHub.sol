@@ -82,10 +82,10 @@ contract EventHub {
         CreateEvent storage myEvent = idToEvent[eventId];
 
         // transfer deposit to our contract / require that they send in enough ETH to cover the deposit requirement of this specific event
-//        require(msg.value == myEvent.deposit, "NOT ENOUGH"); TODO: why not working.
+        require(msg.value == myEvent.deposit, "NOT ENOUGH");
 
-        // require that the event hasn't already happened (<eventTimestamp)
-//        require(block.timestamp <= myEvent.eventTimestamp, "ALREADY HAPPENED"); TODO: why is saying happened.
+        // require that the event hasn't already happened
+        require(block.timestamp <= myEvent.eventTimestamp, "ALREADY HAPPENED");
 
         // make sure event is under max capacity
         require(
@@ -121,6 +121,8 @@ contract EventHub {
     function confirmAttendee(uint256 eventId, address attendee) public {
         // look up event from our struct using the eventId
         CreateEvent storage myEvent = idToEvent[eventId];
+
+        require(block.timestamp >= myEvent.eventTimestamp, "EVENT NOT STARTED");
 
         // require that msg.sender is the owner of the event - only the host should be able to check people in
         require(msg.sender == myEvent.eventOwner, "NOT AUTHORIZED");
@@ -202,21 +204,23 @@ contract EventHub {
 
     function getEvent(uint256 eventID) public view returns (
         string memory title,
-        string memory description,
+        // string memory description,
         string memory imagePath,
         address eventOwner,
         uint256 eventTimestamp,
         uint256 maxCapacity,
-        uint256 deposit
+        uint256 deposit,
+        address[] memory confirmedRSVPs
     ) {
         return (
         idToEvent[eventID].title,
-        idToEvent[eventID].description,
+        // idToEvent[eventID].description,
         idToEvent[eventID].imagePath,
         idToEvent[eventID].eventOwner,
         idToEvent[eventID].eventTimestamp,
         idToEvent[eventID].maxCapacity,
-        idToEvent[eventID].deposit
+        idToEvent[eventID].deposit,
+        idToEvent[eventID].confirmedRSVPs
         );
     }
 
