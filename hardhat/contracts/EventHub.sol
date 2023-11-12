@@ -44,7 +44,7 @@ contract EventHub {
         uint256 maxCapacity,
         string calldata imagePath
        
-    ) external returns(uint256) {
+    ) external payable returns(uint256) {
 
         uint256 eventId = totalEvents;
         address[] memory confirmedRSVPs;
@@ -168,9 +168,9 @@ contract EventHub {
         // check that the paidOut boolean still equals false AKA the money hasn't already been paid out
         require(!myEvent.paidOut, "ALREADY PAID");
 
-        // check if it's been 7 days past myEvent.eventTimestamp
+        // check if it's been 2 minutes past myEvent.eventTimestamp
         require(
-            block.timestamp >= (myEvent.eventTimestamp + 7 days),
+            block.timestamp >= (myEvent.eventTimestamp + 2 minutes),
             "TOO EARLY"
         );
 
@@ -228,9 +228,8 @@ contract EventHub {
         return eventIds.length;
     }
 
-    function getConfirmedRSVPs(uint256 eventId) public view returns (address [] memory) {
-        CreateEvent storage myEvent = idToEvent[eventId];
-        return myEvent.confirmedRSVPs;
+    function getContractBalance() external view returns (uint256) {
+        return address(this).balance;
     }
 }
 

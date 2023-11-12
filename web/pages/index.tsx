@@ -1,14 +1,26 @@
 
 import { useContext, useEffect, useState } from 'react';
 import { ethers } from 'ethers'
-import { getEvents } from '../utils';
+import { getContractBalance, getEvents } from '../utils';
 import EventCard from '@/components/EventCard';
 import { ModalContext } from '@/contexts/ModalContext';
+import { useQuery } from 'react-query';
 
 const ContractInteraction = () => {
 
   const [events, setEvents] = useState([]);
   const { eventCreated } = useContext(ModalContext)
+
+const getContractBalanceHandler = async () => {
+   if (window.ethereum) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const res = await getContractBalance(provider.getSigner())
+    console.log(res)
+  } else {
+    console.log('Install Metamask to continue')
+  }
+}
+
 
 const getEventHandler = async () => {
   if (window.ethereum) {
@@ -35,7 +47,7 @@ useEffect(() => {
         Organizing events does not need to be hard
       </p>
     </div>
-    <p onClick={getEventHandler}>Get EVents</p>
+    <p onClick={getContractBalanceHandler}>Get EVents</p>
     
 
 <div className="flex flex-wrap mx-4">

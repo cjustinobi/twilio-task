@@ -1,10 +1,11 @@
 
 import { ethers } from 'ethers'
 import EventHub from '../artifacts/contracts/EventHub.sol/EventHub.json'
+import { platformFee } from './helpers';
 
 const contractABI = EventHub.abi
 
-const contractAddress = '0xCc4F012E4D9D198e1Aa3cb8ccF718353af8D2d69';
+const contractAddress = '0x1d5d7528c2eC8c587952d0e9015b9f979f0d797C';
 
 export const contractInstance = (provider: ethers.Signer | ethers.providers.Provider | undefined) => {
   return new ethers.Contract(contractAddress, contractABI, provider);
@@ -51,6 +52,7 @@ export const createEvent = async (
   maxCapacity: number,
   imagePath: string
   ) => {
+    debugger
   const contract = await contractInstance(provider)
   return await contract.createNewEvent(
     title,
@@ -58,7 +60,8 @@ export const createEvent = async (
     eventTimestamp,
     ethers.utils.parseUnits(deposit, "ether"),
     maxCapacity,
-    imagePath
+    imagePath,
+    {value: ethers.utils.parseUnits(deposit, "ether")}
   )
 }
 
@@ -77,4 +80,11 @@ export const confirmAllAttendees = async (
   ) => {
   const contract = await contractInstance(provider)
   return await contract.confirmAllAttendees(eventId)
+}
+
+export const getContractBalance = async (
+  provider: ethers.Signer | ethers.providers.Provider | undefined
+  ) => {
+  const contract = await contractInstance(provider)
+  return await contract.getContractBalance()
 }
