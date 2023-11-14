@@ -1,6 +1,8 @@
+import { ModalContext } from "@/contexts/ModalContext"
 import { confirmAllAttendees, createNewRSVP, priceToEther, timestampToDate } from "@/utils"
 import { ethers } from "ethers"
 import Image from 'next/image'
+import { useContext } from "react"
 
 interface EventCardProps {
   id: number
@@ -28,12 +30,16 @@ const EventCard: React.FC<EventCardProps> = ({
   // getTransactionsHandler
   }) => {
 
+    const { setEventCreated } = useContext(ModalContext)
+
     const rsvp = async (eventId: number, deposit: number) => {
       if (window.ethereum) {
         try {
           const provider = new ethers.providers.Web3Provider(window.ethereum);
           const res = await createNewRSVP(provider.getSigner(), eventId, deposit)
-          console.log(res)
+          if (res) {
+            setEventCreated(true)
+          }
         } catch (error) {
           console.log(error)
         }

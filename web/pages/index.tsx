@@ -1,10 +1,9 @@
 
 import { useContext, useEffect, useState } from 'react';
 import { ethers } from 'ethers'
-import { getContractBalance, getEvents } from '../utils';
+import { confirmAllAttendees, getContractBalance, getEvents, contractInstance } from '../utils';
 import EventCard from '@/components/EventCard';
-import { ModalContext } from '@/contexts/ModalContext';
-import { useQuery } from 'react-query';
+import { ModalContext } from '@/contexts/ModalContext'
 
 const ContractInteraction = () => {
 
@@ -15,6 +14,16 @@ const getContractBalanceHandler = async () => {
    if (window.ethereum) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const res = await getContractBalance(provider.getSigner())
+    console.log(res)
+  } else {
+    console.log('Install Metamask to continue')
+  }
+}
+
+const confirm = async () => {
+   if (window.ethereum) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const res = await confirmAllAttendees(provider.getSigner())
     console.log(res)
   } else {
     console.log('Install Metamask to continue')
@@ -36,6 +45,38 @@ useEffect(() => {
     getEventHandler();
   }, [eventCreated]);
 
+  useEffect(() => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+   const contract =  contractInstance(provider)
+
+    const sendSMS = async (phones: any) => {
+      console.log('the phones ', phones)
+       // Use fetch to call your Next.js API route
+      const response = await fetch('/api/twilio', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          body: 'Your SMS body here',
+          to: phones[0], // Assuming you want to send to the first phone number in the array
+        }),
+      });
+
+      const data = await response.json();
+      console.log('SMS API response:', data)
+      
+    };
+
+    // Listen for the PhonesReturned event
+    contract.on('Phones', sendSMS);
+
+    // Remove the listener when the component is unmounted
+    return () => {
+      contract.off('Phones', sendSMS);
+    };
+  }, []);
+
   return (
   <div className="bg-black-1 px-4 py-12 md:py-20 mx-auto md:px-10 lg:px-16 xl:px-24">
     <div className='container flex flex-col items-center justify-center px-4 py-5 mx-auto md:px-10 lg:px-16 xl:px-24'>
@@ -47,7 +88,7 @@ useEffect(() => {
         Organizing events does not need to be hard
       </p>
     </div>
-    <p onClick={getContractBalanceHandler}>Get EVents</p>
+    <p onClick={confirm}>Get EVents</p>
     
 
 <div className="flex flex-wrap mx-4">

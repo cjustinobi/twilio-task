@@ -2,6 +2,7 @@ import { ModalContext } from "@/contexts/ModalContext"
 import { createEvent, toTimestamp } from "@/utils";
 import { useContext, useState } from "react"
 import { ethers } from "ethers";
+import { debugPort } from "process";
 
 const FormModal = () => {
 const { showModal, toggleModal, setEventCreated } = useContext(ModalContext)
@@ -9,6 +10,7 @@ const { showModal, toggleModal, setEventCreated } = useContext(ModalContext)
 const [title, setTitle] = useState<string>('SWeet title')
 const [description, setDescription] = useState<string>('Desc')
 const [deposit, setDeposit] = useState<string>('')
+const [phone, setPhone] = useState<string>('')
 const [capacity, setCapacity] = useState<number>(2)
 const [startTime, setStartTime] = useState<number | undefined>(0)
 const [imagePath, setImagePath] = useState<string>('https://cockpit-project.org/images/site/cockpit-logo.svg')
@@ -27,10 +29,22 @@ const [imagePath, setImagePath] = useState<string>('https://cockpit-project.org/
 const saveHandler = async () => {
   if (window.ethereum) {
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const res = await createEvent(provider.getSigner(), title, description, startTime, deposit, capacity, imagePath)
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+  
+      const tx = await createEvent(
+        provider.getSigner(), 
+        title, 
+        description, 
+        startTime, 
+        deposit, 
+        capacity, 
+        imagePath,
+        phone
+      )
       toggleModal()
-      setEventCreated(true)
+      if (tx) {
+        setEventCreated(true)
+      }
     } catch (error) {
       
     }
@@ -116,6 +130,20 @@ const saveHandler = async () => {
           id="imagePath"
           onChange={e => setImagePath(e.target.value)}
           placeholder="Image URI"
+          required
+        />
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phone">
+          Phone
+        </label>
+        <input
+          className="w-full px-3 py-2 border rounded-lg text-gray-700 focus:outline-none focus:border-blue-500"
+          type="text"
+          id="phone"
+          onChange={e => setPhone(e.target.value)}
+          placeholder="Enter phone number for feedback"
           required
         />
       </div>

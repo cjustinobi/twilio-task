@@ -15,6 +15,8 @@ contract EventHub {
         string imagePath
     );
 
+    event Phones(string[] phones);
+
     event NewRSVP(uint256 eventID, address attendeeAddress);
 
     event ConfirmedAttendee(uint256 eventID, address attendeeAddress);
@@ -23,7 +25,7 @@ contract EventHub {
 
     struct CreateEvent {
         string title;
-        string description;
+        // string description;
         string imagePath;
         address eventOwner;
         uint256 eventTimestamp;
@@ -32,17 +34,19 @@ contract EventHub {
         address[] confirmedRSVPs;
         address[] claimedRSVPs;
         bool paidOut;
+        string phone;
     }
 
     mapping(uint256 => CreateEvent) public idToEvent;
 
     function createNewEvent(
         string calldata title,
-        string calldata description,
+        // string calldata description,
         uint256 eventTimestamp,
         uint256 deposit,
         uint256 maxCapacity,
-        string calldata imagePath
+        string calldata imagePath,
+        string calldata phone
        
     ) external payable returns(uint256) {
 
@@ -53,7 +57,7 @@ contract EventHub {
         // this creates a new CreateEvent struct and adds it to the idToEvent mapping
         idToEvent[eventId] = CreateEvent(
             title,
-            description,
+            // description,
             imagePath,
             msg.sender,
             eventTimestamp,
@@ -61,7 +65,8 @@ contract EventHub {
             maxCapacity,
             confirmedRSVPs,
             claimedRSVPs,
-            false
+            false,
+            phone
         );
 
         emit NewEventCreated(
@@ -105,29 +110,39 @@ contract EventHub {
         emit NewRSVP(eventId, msg.sender);
     }
 
-    function confirmAllAttendees(uint256 eventId) external {
-        // look up event from our struct with the eventId
-        CreateEvent memory myEvent = idToEvent[eventId];
 
-        // make sure you require that msg.sender is the owner of the event
-        require(msg.sender == myEvent.eventOwner, "NOT AUTHORIZED");
+    function confirmAllAttendees() external {
+        //  function confirmAllAttendees() external returns (string[] memory) {
+        string[] memory phones;
+        // Iterate over all event IDs
+        for (uint256 i = 0; i < totalEvents; i++) {
+            // Look up event from our struct with the eventId
+            CreateEvent storage myEvent = idToEvent[eventIds[i]];
 
-        // confirm each attendee in the rsvp array
-        for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
-            confirmAttendee(eventId, myEvent.confirmedRSVPs[i]);
+            if (block.timestamp >= (myEvent.eventTimestamp + 2 minutes)) {
+                    if (!myEvent.paidOut) {
+                        for (uint8 j = 0; j < myEvent.confirmedRSVPs.length; j++) {
+                            confirmAttendee(eventIds[i], myEvent.confirmedRSVPs[j]);
+                        
+                            if (!contains(phones, myEvent.phone)) {
+                            phones = appendToArray(phones, myEvent.phone);
+                        }
+                    }
+                }
+            }
+
+            // Confirm each attendee in the RSVP array if not already paid out
+            
         }
+        emit Phones(phones);
+       
     }
+
 
     function confirmAttendee(uint256 eventId, address attendee) public {
         // look up event from our struct using the eventId
         CreateEvent storage myEvent = idToEvent[eventId];
 
-        require(block.timestamp >= myEvent.eventTimestamp, "EVENT NOT STARTED");
-
-        // require that msg.sender is the owner of the event - only the host should be able to check people in
-        require(msg.sender == myEvent.eventOwner, "NOT AUTHORIZED");
-
-        // require that attendee trying to check in actually RSVP'd
         address rsvpConfirm;
 
         for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
@@ -137,14 +152,6 @@ contract EventHub {
         }
 
         require(rsvpConfirm == attendee, "NO RSVP TO CONFIRM");
-
-        // require that attendee is NOT already in the claimedRSVPs list AKA make sure they haven't already checked in
-        for (uint8 i = 0; i < myEvent.claimedRSVPs.length; i++) {
-            require(myEvent.claimedRSVPs[i] != attendee, "ALREADY CLAIMED");
-        }
-
-        // require that deposits are not already claimed by the event owner
-        require(myEvent.paidOut == false, "ALREADY PAID OUT");
 
         // add the attendee to the claimedRSVPs list
         myEvent.claimedRSVPs.push(attendee);
@@ -158,6 +165,7 @@ contract EventHub {
         }
 
         require(sent, "Failed to send Ether");
+        myEvent.paidOut = true;
         emit ConfirmedAttendee(eventId, attendee);
     }
 
@@ -230,6 +238,26 @@ contract EventHub {
 
     function getContractBalance() external view returns (uint256) {
         return address(this).balance;
+    }
+
+    // Helper function to check if an element is in the array
+    function contains(string[] memory arr, string memory element) internal pure returns (bool) {
+        for (uint256 i = 0; i < arr.length; i++) {
+            if (keccak256(bytes(arr[i])) == keccak256(bytes(element))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Helper function to append a string to a string array
+    function appendToArray(string[] memory arr, string memory element) internal pure returns (string[] memory) {
+        string[] memory newArr = new string[](arr.length + 1);
+        for (uint256 i = 0; i < arr.length; i++) {
+            newArr[i] = arr[i];
+        }
+        newArr[arr.length] = element;
+        return newArr;
     }
 }
 

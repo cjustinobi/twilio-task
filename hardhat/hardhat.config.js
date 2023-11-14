@@ -6,7 +6,7 @@ require('dotenv').config()
 // require("@nomiclabs/hardhat-ethers");
 // require("@typechain/hardhat");
 
-const { SEPOLIA_PRIVATE_KEY } = process.env
+const { PRIVATE_KEY } = process.env
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -15,8 +15,7 @@ module.exports = {
   networks: {
    maticmum: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/x3zIrHFB7HFjpRCrh8i827GH8ezaHyiU`,
-      // url: `https://eth-sepolia.g.alchemy.com/v2/q7fjK5eosDfEgAmoNXHHIXMjEomWECLk`,
-      accounts: [SEPOLIA_PRIVATE_KEY]
+      accounts: [PRIVATE_KEY]
     }
   },
   optimizer: {

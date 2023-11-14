@@ -5,7 +5,7 @@ import { platformFee } from './helpers';
 
 const contractABI = EventHub.abi
 
-const contractAddress = '0x1d5d7528c2eC8c587952d0e9015b9f979f0d797C';
+const contractAddress = '0xD041B2854D9F2F856AAdB77255C66cd09957c95C'
 
 export const contractInstance = (provider: ethers.Signer | ethers.providers.Provider | undefined) => {
   return new ethers.Contract(contractAddress, contractABI, provider);
@@ -50,19 +50,25 @@ export const createEvent = async (
   eventTimestamp: number | undefined,
   deposit: string,
   maxCapacity: number,
-  imagePath: string
+  imagePath: string,
+  phone: string
   ) => {
-    debugger
+  
   const contract = await contractInstance(provider)
-  return await contract.createNewEvent(
+  const tx = await contract.createNewEvent(
     title,
-    description,
+    // description,
     eventTimestamp,
     ethers.utils.parseUnits(deposit, "ether"),
     maxCapacity,
     imagePath,
+    phone,
     {value: ethers.utils.parseUnits(deposit, "ether")}
   )
+  if (tx) {
+    const result = await tx.wait()
+    return result
+  }
 }
 
 export const createNewRSVP = async (
@@ -71,15 +77,24 @@ export const createNewRSVP = async (
   deposit: string
   ) => {
   const contract = await contractInstance(provider)
-  return await contract.createNewRSVP(eventId, { value: deposit})
+  const tx = await contract.createNewRSVP(eventId, { value: deposit})
+  if (tx) {
+    return await tx.wait()
+  }
 }
 
 export const confirmAllAttendees = async (
-  provider: ethers.Signer | ethers.providers.Provider | undefined,
-  eventId: number
+  provider: ethers.Signer | ethers.providers.Provider | undefined
   ) => {
   const contract = await contractInstance(provider)
-  return await contract.confirmAllAttendees(eventId)
+  try {
+    const tx = await contract.confirmAllAttendees()
+    if (tx) {
+      return await tx.wait()  
+    }
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export const getContractBalance = async (
