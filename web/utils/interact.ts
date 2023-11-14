@@ -5,7 +5,7 @@ import { platformFee } from './helpers';
 
 const contractABI = EventHub.abi
 
-const contractAddress = '0xD041B2854D9F2F856AAdB77255C66cd09957c95C'
+const contractAddress = '0xE071eC1De01C41993aAA9239C2e612719FcEf683'
 
 export const contractInstance = (provider: ethers.Signer | ethers.providers.Provider | undefined) => {
   return new ethers.Contract(contractAddress, contractABI, provider);

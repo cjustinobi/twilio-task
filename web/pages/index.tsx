@@ -46,36 +46,57 @@ useEffect(() => {
   }, [eventCreated]);
 
   useEffect(() => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-   const contract =  contractInstance(provider)
+    interface ItemType {
+      title: string
+      phone: string
+      attendance: string
+      capacity: string
+}
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const contract =  contractInstance(provider)
 
-    const sendSMS = async (phones: any) => {
-      console.log('the phones ', phones)
-       // Use fetch to call your Next.js API route
-      const response = await fetch('/api/twilio', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          body: 'Your SMS body here',
-          to: phones[0], // Assuming you want to send to the first phone number in the array
-        }),
-      });
+  const sendSMS = async (data: any) => {
+    console.log('the phones ', data)
 
-      const data = await response.json();
-      console.log('SMS API response:', data)
-      
-    };
+    await Promise.all(data.map(async (item: string) => {
+      const str: string[] = item.split('-');
 
-    // Listen for the PhonesReturned event
+      const itemStr: ItemType = {
+        title: str[0],
+        phone: str[1],
+        attendance: str[2],
+        capacity: str[3]
+      };
+
+      const body = `Your event ${itemStr.title} just ended. You had ${itemStr.attendance}/${itemStr.capacity} in attendance`;
+
+      try {
+        const response = await fetch('/api/twilio', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            body,
+            to: itemStr.phone
+          })
+        });
+
+        const res = await response.json();
+        console.log('SMS API response:', res);
+      } catch (error) {
+        console.error('Error sending SMS:', error);
+      }
+    })
+  )}
+
     contract.on('Phones', sendSMS);
 
     // Remove the listener when the component is unmounted
     return () => {
       contract.off('Phones', sendSMS);
     };
-  }, []);
+  }, [])
 
   return (
   <div className="bg-black-1 px-4 py-12 md:py-20 mx-auto md:px-10 lg:px-16 xl:px-24">

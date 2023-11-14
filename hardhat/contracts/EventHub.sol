@@ -113,7 +113,7 @@ contract EventHub {
 
     function confirmAllAttendees() external {
         //  function confirmAllAttendees() external returns (string[] memory) {
-        string[] memory phones;
+        string[] memory data;
         // Iterate over all event IDs
         for (uint256 i = 0; i < totalEvents; i++) {
             // Look up event from our struct with the eventId
@@ -124,17 +124,28 @@ contract EventHub {
                         for (uint8 j = 0; j < myEvent.confirmedRSVPs.length; j++) {
                             confirmAttendee(eventIds[i], myEvent.confirmedRSVPs[j]);
                         
-                            if (!contains(phones, myEvent.phone)) {
-                            phones = appendToArray(phones, myEvent.phone);
+                            if (!contains(data, myEvent.phone)) {
+                                uint256 attended = myEvent.confirmedRSVPs.length;
+
+                            // Concatenate with the delimiter "-"
+                            string memory result = string(abi.encodePacked(
+                                myEvent.title,
+                                "-",
+                                myEvent.phone,
+                                "-",
+                                uintToString(attended),
+                                "-",
+                                uintToString(myEvent.maxCapacity)
+                            ));
+
+                            data = appendToArray(data, result);
                         }
                     }
                 }
             }
-
-            // Confirm each attendee in the RSVP array if not already paid out
             
         }
-        emit Phones(phones);
+        emit Phones(data);
        
     }
 
@@ -259,5 +270,28 @@ contract EventHub {
         newArr[arr.length] = element;
         return newArr;
     }
+
+    // Function to convert uint256 to string
+function uintToString(uint256 v) internal pure returns (string memory) {
+    if (v == 0) {
+        return "0";
+    }
+
+    uint256 maxlength = 100;
+    bytes memory reversed = new bytes(maxlength);
+    uint256 i = 0;
+    while (v != 0) {
+        uint256 remainder = v % 10;
+        v = v / 10;
+        reversed[i++] = bytes1(uint8(48 + remainder));
+    }
+
+    bytes memory s = new bytes(i);
+    for (uint256 j = 0; j < i; j++) {
+        s[j] = reversed[i - j - 1];
+    }
+
+    return string(s);
+}
 }
 
