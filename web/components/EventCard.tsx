@@ -1,33 +1,27 @@
-import { ModalContext } from "@/contexts/ModalContext"
-import { confirmAllAttendees, createNewRSVP, priceToEther, timestampToDate } from "@/utils"
-import { ethers } from "ethers"
+import { ModalContext } from '@/contexts/ModalContext'
+import { confirmAllAttendees, createNewRSVP, priceToEther, timestampToDate } from '@/utils'
+import { ethers } from 'ethers'
 import Image from 'next/image'
-import { useContext } from "react"
+import { useContext } from 'react'
 
 interface EventCardProps {
   id: number
   title: string
-  // description: string
   owner: string
   startTime: string
   deposit: number
   imagePath: string
   maxCapacity: number
   confirmedRSVPs: string[]
-  // getTransactionsHandler: () => void;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
   id,
   title,
-  // description,
-  owner,
   startTime,
   deposit,
-  imagePath,
   maxCapacity,
   confirmedRSVPs
-  // getTransactionsHandler
   }) => {
 
     const { setEventCreated } = useContext(ModalContext)
@@ -47,21 +41,6 @@ const EventCard: React.FC<EventCardProps> = ({
         console.log('Install Metamask to continue')
       }
     }
-
-    const confirmAttendeesHandler = async (eventId: number) => {
-      if (window.ethereum) {
-        try {
-          const provider = new ethers.providers.Web3Provider(window.ethereum);
-          const res = await confirmAllAttendees(provider.getSigner(), eventId)
-          console.log(res)
-        } catch (error) {
-          console.log(error)
-        }
-      } else {
-        console.log('Install Metamask to continue')
-      }
-    }
-
 
   return (
     <div className='sm:w-1/2 md:w-1/3 bg-gradient-to-b from-blue-1 to-green-1 rounded-2xl p-[1px]'>
@@ -117,9 +96,7 @@ const EventCard: React.FC<EventCardProps> = ({
           <button onClick={() => rsvp(id, deposit)} className="flex flex-row space-x-2 ml-1 items-center justify-center w-full py-3 bg-gradient-to-tr from-blue-1 to-green-1 rounded-lg">
             <span className='text-sm font-bold text-white'>RSVP</span>
           </button>
-          <button onClick={() => confirmAttendeesHandler(id)} className="flex flex-row space-x-2 ml-1 items-center justify-center w-full py-3 bg-gradient-to-tr from-blue-1 to-green-1 rounded-lg">
-            <span className='text-sm font-bold text-white'>Confirm all</span>
-          </button>
+          
         </div>
       </div>
    

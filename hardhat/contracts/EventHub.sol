@@ -25,7 +25,6 @@ contract EventHub {
 
     struct CreateEvent {
         string title;
-        // string description;
         string imagePath;
         address eventOwner;
         uint256 eventTimestamp;
@@ -41,7 +40,6 @@ contract EventHub {
 
     function createNewEvent(
         string calldata title,
-        // string calldata description,
         uint256 eventTimestamp,
         uint256 deposit,
         uint256 maxCapacity,
@@ -57,7 +55,6 @@ contract EventHub {
         // this creates a new CreateEvent struct and adds it to the idToEvent mapping
         idToEvent[eventId] = CreateEvent(
             title,
-            // description,
             imagePath,
             msg.sender,
             eventTimestamp,
@@ -112,7 +109,6 @@ contract EventHub {
 
 
     function confirmAllAttendees() external {
-        //  function confirmAllAttendees() external returns (string[] memory) {
         string[] memory data;
         // Iterate over all event IDs
         for (uint256 i = 0; i < totalEvents; i++) {
@@ -208,7 +204,6 @@ contract EventHub {
         // send the payout to the owner
         (bool sent, ) = msg.sender.call{value: payout}("");
 
-        // if this fails
         if (!sent) {
             myEvent.paidOut = false;
         }
@@ -223,7 +218,6 @@ contract EventHub {
 
     function getEvent(uint256 eventID) public view returns (
         string memory title,
-        // string memory description,
         string memory imagePath,
         address eventOwner,
         uint256 eventTimestamp,
@@ -233,7 +227,6 @@ contract EventHub {
     ) {
         return (
         idToEvent[eventID].title,
-        // idToEvent[eventID].description,
         idToEvent[eventID].imagePath,
         idToEvent[eventID].eventOwner,
         idToEvent[eventID].eventTimestamp,
@@ -272,26 +265,26 @@ contract EventHub {
     }
 
     // Function to convert uint256 to string
-function uintToString(uint256 v) internal pure returns (string memory) {
-    if (v == 0) {
-        return "0";
-    }
+    function uintToString(uint256 v) internal pure returns (string memory) {
+        if (v == 0) {
+            return "0";
+        }
 
-    uint256 maxlength = 100;
-    bytes memory reversed = new bytes(maxlength);
-    uint256 i = 0;
-    while (v != 0) {
-        uint256 remainder = v % 10;
-        v = v / 10;
-        reversed[i++] = bytes1(uint8(48 + remainder));
-    }
+        uint256 maxlength = 100;
+        bytes memory reversed = new bytes(maxlength);
+        uint256 i = 0;
+        while (v != 0) {
+            uint256 remainder = v % 10;
+            v = v / 10;
+            reversed[i++] = bytes1(uint8(48 + remainder));
+        }
 
-    bytes memory s = new bytes(i);
-    for (uint256 j = 0; j < i; j++) {
-        s[j] = reversed[i - j - 1];
-    }
+        bytes memory s = new bytes(i);
+        for (uint256 j = 0; j < i; j++) {
+            s[j] = reversed[i - j - 1];
+        }
 
-    return string(s);
-}
+        return string(s);
+    }
 }
 

@@ -24,20 +24,19 @@ const Header = () => {
                 <div className="flex flex-1 justify-between">
                   <div className="flex flex-shrink-0 items-center text-gray-100">
                     <Link href="/" className="font-semibold">EventHub</Link>
-                    {/*<Image className="block h-8 w-auto sm:block lg:block" src="/logo.svg" width="24" height="24" alt="Celo Logo" />*/}
                   </div>
                   <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                     <Link
-                      href="/my-transactions"
-                      className={`inline-flex items-center ${router.pathname === '/my-transactions' ? 'border-b-2 border-black' : ''} px-1 pt-1 text-sm font-bold text-white-200`}
+                      href="/events"
+                      className={`inline-flex items-center ${router.pathname === '/events' ? 'border-b-2 border-black' : ''} px-1 pt-1 text-sm font-bold text-white-200`}
                     >
-                      My Transactions
+                      Events
                     </Link>
                     <Link
-                      href="/my-jobs"
-                      className={`inline-flex items-center ${router.pathname === '/my-jobs' ? 'border-b-2 border-black' : ''} px-1 pt-1 text-sm font-bold text-white-200`}
+                      href="/my-events"
+                      className={`inline-flex items-center ${router.pathname === '/my-events' ? 'border-b-2 border-black' : ''} px-1 pt-1 text-sm font-bold text-white-200`}
                     >
-                      My Jobs
+                      My Events
                     </Link>
                   </div>
                 
